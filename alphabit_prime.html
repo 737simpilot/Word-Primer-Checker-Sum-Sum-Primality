@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Primer Checker, Sum & Sum Primality</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        label { display: block; margin-bottom: 10px; }
+        input { width: 50%; height: 30px; font-size: 18px; padding: 10px; }
+        #result { margin-top: 20px; background-color: #f0f0f0; padding: 10px; border: 1px solid #ddd; }
+        .letter-result { margin-bottom: 15px; }
+        .letter-result:last-child { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+    <h1>Word Primer Checker, Sum & Sum Primality</h1>
+    <form>
+        <label for="word-input">Enter a Word (only Latin letters, A-Z or a-z):</label>
+        <input type="text" id="word-input" pattern="[a-zA-Z ]+" required>
+        <button id="check-btn">Check</button>
+    </form>
+    <div id="result">
+        <div id="word-results"></div>
+        <hr>
+        <div id="sum-result">
+            <strong>Sum of Letter Positions:</strong> <span id="sum-value"></span><br>
+            <strong>Is Sum Prime?</strong> <span id="sum-primality"></span>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const wordInput = document.getElementById('word-input');
+        const checkBtn = document.getElementById('check-btn');
+        const resultDiv = document.getElementById('word-results');
+        const sumValueSpan = document.getElementById('sum-value');
+        const sumPrimalitySpan = document.getElementById('sum-primality');
+
+        // Function to check if a number is prime
+        function isPrime(num) {
+            if (num <= 1) return false;
+            for (let i = 2, sqrt = Math.sqrt(num); i <= sqrt; i++) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        }
+
+        // Event listener for check button
+        checkBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const word = wordInput.value.trim().toUpperCase();
+            if (word.match(/^[A-Z ]+$/)) {
+                resultDiv.innerHTML = ''; // Clear previous results
+                sumValueSpan.textContent = ''; // Clear previous sum
+                sumPrimalitySpan.textContent = ''; // Clear previous primality
+                let sum = 0; // Initialize sum variable
+                const letters = word.split(''); // Split word into individual letters
+                letters.forEach((letter, index) => {
+                    if (letter !== ' ') { // Ignore spaces
+                        const position = letter.charCodeAt(0) - 64; // 'A' starts at 65, so subtract 64
+                        const primeStatus = isPrime(position) ? 'YES, it is a prime number!' : 'NO, it is not a prime number.';
+
+                        // Append result for each letter
+                        const letterResult = document.createElement('div');
+                        letterResult.className = 'letter-result';
+                        letterResult.innerHTML = `
+                            <strong>Letter ${index + 1}:</strong> ${letter}<br>
+                            <strong>Alphabet Position:</strong> ${position}<br>
+                            <strong>Is Position Prime?</strong> ${primeStatus}
+                        `;
+                        resultDiv.appendChild(letterResult);
+
+                        // Add position to sum
+                        sum += position;
+                    }
+                });
+                if (sum === 0) {
+                    resultDiv.innerHTML = '<p>No letters to process (only spaces).</p>';
+                } else {
+                    sumValueSpan.textContent = sum; // Display sum
+                    const sumPrimeStatus = isPrime(sum) ? 'YES, it is a prime number!' : 'NO, it is not a prime number.';
+                    sumPrimalitySpan.textContent = sumPrimeStatus; // Display sum primality
+                }
+            } else {
+                alert('Please enter a word containing only Latin letters (A-Z or a-z) and spaces.');
+            }
+        });
+    </script>
+</body>
+</html>
