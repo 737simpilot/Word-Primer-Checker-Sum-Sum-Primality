@@ -1,0 +1,1 @@
+# Word-Primer-Checker-Sum-Sum-Primality
